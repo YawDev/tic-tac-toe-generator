@@ -2,6 +2,7 @@
 using System;
 using System.Text;
 using Tic.Tac.Toe.Generator.Services;
+using System.Threading.Tasks;
 
 namespace Tic.Tac.Toe.Board
 {
@@ -12,9 +13,9 @@ namespace Tic.Tac.Toe.Board
         public char[,] CreateBoard()
         {
             var stringBuilder = new StringBuilder();
-              for(int row=0;row<board.Length;row++)
+              for(int row=0;row<3;row++)
               {  
-                for(int column=0;column<board.Length;column++)
+                for(int column=0;column<3;column++)
                 {
                     board[row,column] = '_';
                     stringBuilder.Append(board[row,column]).Append(" "); 
@@ -27,9 +28,9 @@ namespace Tic.Tac.Toe.Board
 
         public void DisplayGrid()
         {
-            for(int row=0;row<board.Length;row++)
+            for(int row=0;row<3;row++)
             {  
-                for(int column=0;column<board.Length;column++)
+                for(int column=0;column<3;column++)
                 {
                     System.Console.Write(board[row, column]+ " | ");
                 }
@@ -37,12 +38,14 @@ namespace Tic.Tac.Toe.Board
             }
         }
 
-        public bool AssignPositionOk(int x, int y, char marker)
+        public bool AssignPosition(int x, int y, char marker)
         {
-            if(board[x,y] != 'x' || board[x,y] != 'o')
+            if(board[x,y] == '_')
             {    
-                board[x,y] = marker; return true;
+                board[x,y] = marker; 
+                return true;
             }
+            System.Console.WriteLine("Spot is already taken.");
             return false;
         }
     }

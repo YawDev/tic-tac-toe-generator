@@ -13,24 +13,28 @@ namespace Tic.Tac.Toe.Generator
 {
     public class Program
     {
-        public static GameService _gameService { get; set; }
-        
-        
+
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
-            var host = new GameHost(_gameService);
+            
+           InitializeHost();
+           host.Run();
         }
 
-         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureServices(services =>
-                {
-                    services.AddSingleton<IGameService, GameService>();
-                    services.AddSingleton<IBoardService, BoardService>();
-                    services.AddSingleton<IPlayerService, PlayerOne>();
-                    services.AddSingleton<IPlayerService, PlayerTwo>();
-                });
+        public static void InitializeHost()
+        {
+            CreateSingleton();
+        }
+
+        public static void CreateSingleton()
+        {
+            var instances = new object[]{new BoardService(), new PlayerOne(), new PlayerTwo()};
+            host = new Host((IBoardService)instances[0], (IPlayerService)instances[1], (IPlayerService)instances[2]);
+        }
+
+        public static Host host { get; set; }
+
+        
 
       
         
