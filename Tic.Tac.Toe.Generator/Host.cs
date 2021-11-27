@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,6 @@ namespace Tic.Tac.Toe.Generator
 
                 while(GameInProgress)
                 {
-               
                     PlayerOneTurn();
                     _boardService.DisplayGrid();
                     Console.Clear();
@@ -43,8 +43,10 @@ namespace Tic.Tac.Toe.Generator
             }
             catch(Exception ex)
             {
-                System.Console.WriteLine("Something Went Wrong.");
-                Menu();
+                System.Console.WriteLine("Something Went Wrong");
+                System.Console.WriteLine("Restart ?");
+                if(Console.ReadLine() == "y")
+                    Run();
             }
             
         }
@@ -59,46 +61,64 @@ namespace Tic.Tac.Toe.Generator
 
         public void PlayerOneTurn()
         {
-            int[] coordinates;
+             
+            string[] coordinates; bool success;
 
             System.Console.WriteLine("Player One's Turn!");
             System.Console.WriteLine("__________________");
             System.Console.WriteLine();
             coordinates = FillGridSpot();
 
-            var success = _boardService.AssignPosition(coordinates[0], coordinates[1], _playerOne.marker);
-            while(!success)
-            {    Console.Clear();
+            
+            var validInput = ValidateInput(coordinates[0], coordinates[1]);
+            while(!validInput)
+            {   
                 coordinates = FillGridSpot();
-                success = _boardService.AssignPosition(coordinates[0], coordinates[1], _playerOne.marker);
+                validInput = ValidateInput(coordinates[0], coordinates[1]);
+            }
+
+            success = _boardService.AssignPosition(int.Parse(coordinates[0]), int.Parse(coordinates[1]), _playerOne.marker);
+            while(!success)
+            {    
+                coordinates = FillGridSpot();
+                success = _boardService.AssignPosition(int.Parse(coordinates[0]), int.Parse(coordinates[1]), _playerOne.marker);
             }
         }
 
-         public void PlayerTwoTurn()
+        public void PlayerTwoTurn()
         {
-            int[] coordinates;
+            string[] coordinates; bool success;
 
             System.Console.WriteLine("Player Two's Turn!");
             System.Console.WriteLine("__________________");
             System.Console.WriteLine();
             coordinates = FillGridSpot();
 
-            var success = _boardService.AssignPosition(coordinates[0], coordinates[1], _playerTwo.marker);
-            while(!success)
-                Console.Clear();
+           var validInput = ValidateInput(coordinates[0], coordinates[1]);
+            while(!validInput)
+            {   
                 coordinates = FillGridSpot();
-                success = _boardService.AssignPosition(coordinates[0], coordinates[1], _playerTwo.marker);
+                validInput = ValidateInput(coordinates[0], coordinates[1]);
+            }
+
+            success = _boardService.AssignPosition(int.Parse(coordinates[0]), int.Parse(coordinates[1]), _playerTwo.marker);
+            while(!success)
+            {   
+                coordinates = FillGridSpot();
+                success = _boardService.AssignPosition(int.Parse(coordinates[0]), int.Parse(coordinates[1]), _playerTwo.marker);
+
+            }
         }
 
-        public int[] FillGridSpot()
+        public string[] FillGridSpot()
         {
             System.Console.WriteLine("Enter (x, y) coordinates to place marker in spot on grid.");
             System.Console.WriteLine("x  - coordinate: ");
-            int x = int.Parse(System.Console.ReadLine());
+            string x =System.Console.ReadLine();
             System.Console.Clear();
             System.Console.WriteLine("y  - coordinate:");
-            int y = int.Parse(System.Console.ReadLine());
-            return new int[]{x,y};
+            string y =System.Console.ReadLine();
+            return new string[]{x,y};
         }
 
         public void Menu()
@@ -115,9 +135,17 @@ namespace Tic.Tac.Toe.Generator
             GameInProgress =  false;
         }
 
+        public bool ValidateInput(string x, string y)
+        {
+            if(!int.TryParse(x, out int xResult) || !int.TryParse(y,out int yResult))
+            { System.Console.WriteLine("Invalid input!");  return false;}
+
+            return true;
+        }   
+
         IBoardService _boardService {get;set;}
         IPlayerService _playerOne {get;set;}
         IPlayerService _playerTwo {get;set;}
-        bool GameInProgress;
+        bool GameInProgress; 
     }
 }
