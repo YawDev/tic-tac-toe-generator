@@ -10,5 +10,7 @@ namespace Tic.Tac.Toe.Generator.Services
         char[,] CreateBoard();
         void DisplayGrid();
         bool AssignPosition(int x,int y, char marker);
+        bool CheckForWinner();
+
     }
 }

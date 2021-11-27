@@ -22,8 +22,7 @@ namespace Tic.Tac.Toe.Generator
             try
             {
                 _boardService.CreateBoard();
-                _boardService.DisplayGrid();
-                Console.Clear();
+               // _boardService.DisplayGrid();
             
 
                 Menu();
@@ -32,14 +31,20 @@ namespace Tic.Tac.Toe.Generator
                     SetPlayers();
           
 
-                while(GameInProgress)
+                while(GameInProgress is true)
                 {
                     PlayerOneTurn();
                     _boardService.DisplayGrid();
-                    Console.Clear();
+                    System.Console.WriteLine();
+
+                    if(IsWinner(_playerOne)) break;
+
                     PlayerTwoTurn();
                     _boardService.DisplayGrid();
+                    System.Console.WriteLine();
+                    if(IsWinner(_playerTwo)) break;
                 }
+             
             }
             catch(Exception ex)
             {
@@ -63,7 +68,7 @@ namespace Tic.Tac.Toe.Generator
         {
              
             string[] coordinates; bool success;
-
+            System.Console.WriteLine();
             System.Console.WriteLine("Player One's Turn!");
             System.Console.WriteLine("__________________");
             System.Console.WriteLine();
@@ -83,12 +88,13 @@ namespace Tic.Tac.Toe.Generator
                 coordinates = FillGridSpot();
                 success = _boardService.AssignPosition(int.Parse(coordinates[0]), int.Parse(coordinates[1]), _playerOne.marker);
             }
+
         }
 
         public void PlayerTwoTurn()
         {
             string[] coordinates; bool success;
-
+            System.Console.WriteLine();
             System.Console.WriteLine("Player Two's Turn!");
             System.Console.WriteLine("__________________");
             System.Console.WriteLine();
@@ -106,8 +112,9 @@ namespace Tic.Tac.Toe.Generator
             {   
                 coordinates = FillGridSpot();
                 success = _boardService.AssignPosition(int.Parse(coordinates[0]), int.Parse(coordinates[1]), _playerTwo.marker);
-
             }
+            
+           
         }
 
         public string[] FillGridSpot()
@@ -135,17 +142,40 @@ namespace Tic.Tac.Toe.Generator
             GameInProgress =  false;
         }
 
+       
+
         public bool ValidateInput(string x, string y)
         {
             if(!int.TryParse(x, out int xResult) || !int.TryParse(y,out int yResult))
             { System.Console.WriteLine("Invalid input!");  return false;}
 
             return true;
-        }   
+        }  
+
+        public bool IsWinner(IPlayerService player)
+        {
+            Winner = _boardService.CheckForWinner();
+
+            if(Winner)
+            {
+                WinnerMessage(player.marker); return true;
+            }
+            return false;
+        } 
+
+        public void WinnerMessage(char marker)
+        {
+            if(marker == _playerOne.marker)
+                System.Console.WriteLine("Player One Wins!");
+
+            if(marker == _playerTwo.marker)
+                System.Console.WriteLine("Player Two Wins!");
+        }
 
         IBoardService _boardService {get;set;}
         IPlayerService _playerOne {get;set;}
         IPlayerService _playerTwo {get;set;}
         bool GameInProgress; 
+        bool Winner;
     }
 }
